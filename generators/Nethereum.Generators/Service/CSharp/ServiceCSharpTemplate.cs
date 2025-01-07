@@ -17,28 +17,40 @@ namespace Nethereum.Generators.Service
         public override string GenerateClass()
         {
             return
-                $@"{SpaceUtils.OneTab}public partial class {Model.GetTypeName()}
-{SpaceUtils.OneTab}{{
+                $@"{GenerateMainClass()}
+{SpaceUtils.NoTabs}
+{SpaceUtils.NoTabs}
+{GenerateBaseClass()}";
+        }
+
+
+        public string GenerateMainClass()
+        {
+            return
+                $@"{SpaceUtils.One__Tab}public partial class {Model.GetTypeName()}: {Model.GetTypeName()}Base
+{SpaceUtils.One__Tab}{{
 {_deploymentServiceMethodsCSharpTemplate.GenerateMethods()}
 {SpaceUtils.NoTabs}
-{SpaceUtils.TwoTabs}protected Nethereum.Web3.IWeb3 Web3{{ get; }}
+{SpaceUtils.Two___Tabs}public {Model.GetTypeName()}(Nethereum.Web3.IWeb3 web3, string contractAddress) : base(web3, contractAddress)
+{SpaceUtils.Two___Tabs}{{
+{SpaceUtils.Two___Tabs}}}
+
+{SpaceUtils.One__Tab}}}";
+        }
+
+
+        public string GenerateBaseClass()
+        {
+            return
+                $@"{SpaceUtils.One__Tab}public partial class {Model.GetTypeName()}Base: ContractWeb3ServiceBase
+{SpaceUtils.One__Tab}{{
 {SpaceUtils.NoTabs}
-{SpaceUtils.TwoTabs}public ContractHandler ContractHandler {{ get; }}
-{SpaceUtils.NoTabs}
-{SpaceUtils.TwoTabs}public {Model.GetTypeName()}(Nethereum.Web3.Web3 web3, string contractAddress)
-{SpaceUtils.TwoTabs}{{
-{SpaceUtils.ThreeTabs}Web3 = web3;
-{SpaceUtils.ThreeTabs}ContractHandler = web3.Eth.GetContractHandler(contractAddress);
-{SpaceUtils.TwoTabs}}}
-{SpaceUtils.NoTabs}
-{SpaceUtils.TwoTabs}public {Model.GetTypeName()}(Nethereum.Web3.IWeb3 web3, string contractAddress)
-{SpaceUtils.TwoTabs}{{
-{SpaceUtils.ThreeTabs}Web3 = web3;
-{SpaceUtils.ThreeTabs}ContractHandler = web3.Eth.GetContractHandler(contractAddress);
-{SpaceUtils.TwoTabs}}}
+{SpaceUtils.Two___Tabs}public {Model.GetTypeName()}Base(Nethereum.Web3.IWeb3 web3, string contractAddress) : base(web3, contractAddress)
+{SpaceUtils.Two___Tabs}{{
+{SpaceUtils.Two___Tabs}}}
 {SpaceUtils.NoTabs}
 {_functionServiceMethodCSharpTemplate.GenerateMethods()}
-{SpaceUtils.OneTab}}}";
+{SpaceUtils.One__Tab}}}";
         }
     }
 }

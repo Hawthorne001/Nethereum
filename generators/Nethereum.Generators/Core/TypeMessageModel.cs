@@ -23,14 +23,14 @@ namespace Nethereum.Generators.Core
             CodeGenLanguage = CodeGenLanguage.CSharp;
         }
 
-        public string GetTypeName(string name)
+        public virtual string GetTypeName(string name)
         {
             return $"{CommonGenerators.GenerateClassName(name)}{ClassNameSuffix}";
         }
 
-        public string GetFileName(string name)
+        public virtual string GetFileName(string name)
         {
-            return GetTypeName(name) + "." + CodeGenLanguage.GetCodeOutputFileExtension();
+            return GetTypeName(name) + ".gen." + CodeGenLanguage.GetCodeOutputFileExtension();
         }
 
         public string GetVariableName(string name)
@@ -38,12 +38,12 @@ namespace Nethereum.Generators.Core
             return $"{CommonGenerators.GenerateVariableName(name, CodeGenLanguage)}{ClassNameSuffix}";
         }
 
-        public string GetTypeName()
+        public virtual string GetTypeName()
         {
             return GetTypeName(Name);
         }
 
-        public string GetFileName()
+        public virtual string GetFileName()
         {
             return GetFileName(Name);
         }

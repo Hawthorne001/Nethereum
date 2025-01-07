@@ -88,7 +88,26 @@ namespace Nethereum.Util
             return ret;
         }
 
-        public static byte[] ShiftLeft(this byte[] value, int shift)
+        public static byte[] PadBytesLeft(this byte[] bytesToPad, int numberOfBytes)
+        {
+            if(numberOfBytes < bytesToPad.Length) throw new ArgumentException("Cannot pad to a size smaller than the original size");
+
+            return PadBytes(bytesToPad, numberOfBytes);
+        }
+
+        public static byte[] PadBytesRight(this byte[] bytesToPad, int numberOfBytes)
+        {
+            var ret = new byte[numberOfBytes];
+
+            for (var i = 0; i < ret.Length; i++)
+                ret[i] = 0;
+            Array.Copy(bytesToPad, 0, ret, 0, bytesToPad.Length);
+
+            return ret;
+        }
+
+
+            public static byte[] ShiftLeft(this byte[] value, int shift)
         {
 //#if NETCOREAPP2_0_OR_GREATER
 
@@ -117,6 +136,8 @@ namespace Nethereum.Util
             return newValue;
 //#endif
         }
+
+
 
        
         public static byte[] ShiftRight(this byte[] value, int shift)
@@ -147,7 +168,22 @@ namespace Nethereum.Util
 
             return newValue;
 //#endif
-        }  
+        }
+
+        public static List<byte[]> SplitBytes(this byte[] bytes, int chunkSize = 32)
+        {
+            var result = new List<byte[]>();
+            int totalChunks = bytes.Length / chunkSize;
+
+            for (int i = 0; i < totalChunks; i++)
+            {
+                var chunk = new byte[chunkSize];
+                Array.Copy(bytes, i * chunkSize, chunk, 0, chunkSize);
+                result.Add(chunk);
+            }
+
+            return result;
+        }
     }
 
 

@@ -33,7 +33,7 @@ namespace Nethereum.Model
         private static void ValidateValidV(RLPSignedDataHashBuilder rlpSigner)
         {
             if (!rlpSigner.IsVSignatureForChain())
-                throw new Exception("Transaction should be used instead of TransactionChainId, invalid V");
+                throw new Exception("LegacyTransaction should be used instead of LegacyTransactionChainId, invalid V");
         }
         private void GetChainIdFromVAndAppendDataForHashRecovery()
         {
@@ -100,6 +100,15 @@ namespace Nethereum.Model
             gasLimit.ToBytesForRLPEncoding(), to.HexToByteArray(), amount.ToBytesForRLPEncoding(),
             data.HexToByteArray(), chainId.ToBytesForRLPEncoding()
         )
+        {
+        }
+
+        public LegacyTransactionChainId(string to, BigInteger amount, BigInteger nonce, BigInteger gasPrice,
+          BigInteger gasLimit, string data, BigInteger chainId, byte[] r, byte[] s, byte[] v) : this(nonce.ToBytesForRLPEncoding(),
+          gasPrice.ToBytesForRLPEncoding(),
+          gasLimit.ToBytesForRLPEncoding(), to.HexToByteArray(), amount.ToBytesForRLPEncoding(),
+          data.HexToByteArray(), chainId.ToBytesForRLPEncoding(), r, s, v
+      )
         {
         }
 
