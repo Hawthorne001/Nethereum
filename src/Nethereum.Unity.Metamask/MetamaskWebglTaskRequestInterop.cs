@@ -13,6 +13,7 @@ namespace Nethereum.Unity.Metamask
     using Nethereum.Metamask;
     using Nethereum.RPC.AccountSigning;
     using Nethereum.RPC.HostWallet;
+    using Nethereum.Unity.Rpc;
     using UnityEngine;
 
     public class MetamaskWebglTaskRequestInterop : IMetamaskInterop

@@ -20,6 +20,7 @@ namespace Nethereum.ABI.FunctionEncoding
             return SignatureEncoder.IsDataForSignature(errorABI.Sha3Signature, data);
         }
 
+       
         public List<ParameterOutput> DecodeInput(FunctionABI functionABI, string data)
         {
             return DecodeFunctionInput(functionABI.Sha3Signature, data,
@@ -32,7 +33,10 @@ namespace Nethereum.ABI.FunctionEncoding
                 errorABI.InputParameters);
         }
 
-       
+        public object DecodeError(Type errorType, string data)
+        {
+            return DecodeAttributes(data.HexToByteArray(), errorType);
+        }
 
         public List<ParameterOutput> DecodeFunctionInput(string sha3Signature, string data,
             params Parameter[] parameters)
@@ -71,6 +75,23 @@ namespace Nethereum.ABI.FunctionEncoding
         public TError DecodeFunctionCustomError<TError>(TError error, string signature, string encodedErrorData)
         {
             return DecodeFunctionInput(error, signature, encodedErrorData);
+        }
+
+        public object DecodeFunctionCustomError(Type errorType, string sha3Signature, string data)
+        {
+            var errorResult = Activator.CreateInstance(errorType);
+            sha3Signature = sha3Signature.EnsureHexPrefix();
+            data = data.EnsureHexPrefix();
+
+            if ((data == "0x") || (data == sha3Signature)) return errorResult;
+
+            if (data.StartsWith(sha3Signature))
+                data = data.Substring(sha3Signature.Length);
+
+            
+            var properties = PropertiesExtractor.GetPropertiesWithParameterAttribute(errorType);
+            DecodeAttributes(data, errorResult, properties.ToArray());
+            return errorResult;
         }
 
 

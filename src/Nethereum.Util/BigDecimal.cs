@@ -9,6 +9,7 @@ namespace Nethereum.Util
     /// Original Author: Jan Christoph Bernack (contact: jc.bernack at googlemail.com)
     /// Changes JB: Added parse, Fix Normalise, Added Floor, New ToString, Change Equals (normalise to validate first), Change Casting to avoid overflows (even if might be slower), Added Normalise Bigger than zero, test on operations, parsing, casting, and other test coverage for ethereum unit conversions
     /// Changes KJ: Added Culture formatting
+    /// Changes ER: Added explicit BigInteger cast, added FloorToBigInteger
     /// http://stackoverflow.com/a/13813535/956364" />
     /// <summary>
     ///     Arbitrary precision Decimal.
@@ -110,7 +111,7 @@ namespace Nethereum.Util
         /// <returns>The truncated number</returns>
         internal BigDecimal Truncate(int precision = Precision)
         {
-            //if the precission is 0, 
+            //if the precision is 0, 
             if(precision <= 0) throw new ArgumentException("Precision has to bigger than 0");
             // copy this instance (remember its a struct)
             var shortened = this;
@@ -157,10 +158,15 @@ namespace Nethereum.Util
         /// <returns>The truncated number</returns>
         public BigDecimal Floor()
         {
-            var precission = Mantissa.NumberOfDigits() + Exponent;
-            if (precission <= 0) return 0;
+            var precision = Mantissa.NumberOfDigits() + Exponent;
+            if (precision <= 0) return 0;
 
-            return Truncate(precission);
+            return Truncate(precision);
+        }
+
+        public BigInteger FloorToBigInteger()
+        {
+            return Floor().Mantissa;
         }
 
         private static int NumberOfDigits(BigInteger value)
@@ -271,6 +277,11 @@ namespace Nethereum.Util
             return Convert.ToUInt32((decimal) value);
         }
 
+        public static explicit operator BigInteger(BigDecimal value)
+        {
+            return value.FloorToBigInteger();
+        }
+
         #endregion
 
         #region Operators
@@ -376,6 +387,22 @@ namespace Nethereum.Util
                 exponent = (value.Length - (indexOfDecimal + 1)) * -1;
             var mantissa = BigInteger.Parse(value.Replace(decimalCharacter, ""));
             return new BigDecimal(mantissa, exponent);
+        }
+
+        public static bool TryParse(string? value, out BigDecimal result)
+        {
+            try
+            {
+                if (value == null) throw new ArgumentNullException(nameof(value));
+
+                result = Parse(value);
+                return true;
+            }
+            catch
+            {
+                result = default;
+                return false;
+            }
         }
 
         /// <summary>

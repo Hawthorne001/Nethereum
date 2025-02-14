@@ -11,6 +11,8 @@ namespace Nethereum.Metamask
     {
         private readonly IMetamaskInterop _metamaskInterop;
         public static MetamaskHostProvider Current { get; private set; }
+        public bool MultipleWalletsProvider => false;
+        public bool MultipleWalletSelected { get; private set; } = false;
         public string Name { get; } = "Metamask";
         public bool Available { get; private set; }
         public string SelectedAccount

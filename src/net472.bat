@@ -136,14 +136,21 @@ cd Nethereum.Metamask
 CALL :build
 cd ..
 
-cd Nethereum.UI.Host
-CALL :build
-cd ..
-
 cd Nethereum.Model
 CALL :build
 cd ..
 
+cd Nethereum.Mud
+CALL :build
+cd ..
+
+cd Nethereum.Mud.Contracts
+CALL :build
+cd ..
+
+cd Nethereum.Util.RestApi
+CALL :build
+cd ..
 
 EXIT /B %ERRORLEVEL%
 
